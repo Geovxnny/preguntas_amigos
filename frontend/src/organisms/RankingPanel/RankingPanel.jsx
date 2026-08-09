@@ -108,10 +108,11 @@ export function RankingPanel() {
   });
   const tiedGroups = Object.values(ties).filter(group => group.length > 1 && group[0].puntos > 0);
 
-  const maxPos = rankedWithPos.length > 0 ? rankedWithPos[rankedWithPos.length - 1].posicion : 0;
-  const reyGroup = rankedWithPos.filter(r => r.posicion === 0 && r.puntos > 0);
-  const aprendicesGroup = rankedWithPos.filter(r => r.posicion > 0 && r.posicion < maxPos && r.puntos > 0);
-  const cartonGroup = rankedWithPos.filter(r => r.posicion === maxPos && totalPuntos > 0);
+  const reyGroup = rankedWithPos.slice(0, 1).filter(r => r.puntos > 0);
+  const entonadosGroup = rankedWithPos.slice(1, 3).filter(r => r.puntos > 0);
+  const aprendicesGroup = rankedWithPos.slice(3, 5).filter(r => r.puntos > 0);
+  const aguaGroup = rankedWithPos.slice(5, 7).filter(r => r.puntos > 0);
+  const cartonGroup = rankedWithPos.slice(7, 8).filter(r => r.puntos > 0);
 
   const startTieBreaker = (group) => {
     setSelectedTieGroup(group);
@@ -201,37 +202,65 @@ export function RankingPanel() {
           </div>
 
           <div className={styles.titlesRow}>
-            <div className={styles.titleCard} style={{ borderColor: '#FBBF24' }}>
-              <div className={styles.titleIcon}>
-                <Icon name="Crown" size={32} color="#FBBF24" />
-              </div>
-              <div className={styles.titleText}>
-                <span>Rey del Chuchaqui</span>
-                <strong>{reyGroup.map(r => r.amigo).join(' & ') || 'Nadie'}</strong>
-              </div>
-            </div>
-            
-            {aprendicesGroup.length > 0 && (
-              <div className={styles.titleCard} style={{ borderColor: '#38BDF8' }}>
+            {reyGroup.length > 0 && (
+              <div className={styles.titleCard} style={{ borderColor: '#FBBF24' }}>
                 <div className={styles.titleIcon}>
-                  <Icon name="Users" size={32} color="#38BDF8" />
+                  <Icon name="Crown" size={28} color="#FBBF24" />
                 </div>
                 <div className={styles.titleText}>
-                  <span>Aprendices del Chuchaqui</span>
-                  <strong>{aprendicesGroup.map(r => r.amigo).join(', ')}</strong>
+                  <span>Rey del Chuchaqui</span>
+                  <strong>{reyGroup.map(r => r.amigo).join(' & ')}</strong>
+                </div>
+              </div>
+            )}
+            
+            {entonadosGroup.length > 0 && (
+              <div className={styles.titleCard} style={{ borderColor: '#F97316' }}>
+                <div className={styles.titleIcon}>
+                  <Icon name="Flame" size={28} color="#F97316" />
+                </div>
+                <div className={styles.titleText}>
+                  <span>Los Entonados</span>
+                  <strong>{entonadosGroup.map(r => r.amigo).join(' & ')}</strong>
                 </div>
               </div>
             )}
 
-            <div className={styles.titleCard} style={{ borderColor: '#94A3B8' }}>
-              <div className={styles.titleIcon}>
-                <Icon name="Package" size={32} color="#94A3B8" />
+            {aprendicesGroup.length > 0 && (
+              <div className={styles.titleCard} style={{ borderColor: '#38BDF8' }}>
+                <div className={styles.titleIcon}>
+                  <Icon name="Users" size={28} color="#38BDF8" />
+                </div>
+                <div className={styles.titleText}>
+                  <span>Aprendices del Chuchaqui</span>
+                  <strong>{aprendicesGroup.map(r => r.amigo).join(' & ')}</strong>
+                </div>
               </div>
-              <div className={styles.titleText}>
-                <span>Chuchaqui de Cartón</span>
-                <strong>{cartonGroup.map(r => r.amigo).join(' & ') || 'Nadie'}</strong>
+            )}
+
+            {aguaGroup.length > 0 && (
+              <div className={styles.titleCard} style={{ borderColor: '#22C55E' }}>
+                <div className={styles.titleIcon}>
+                  <Icon name="Droplet" size={28} color="#22C55E" />
+                </div>
+                <div className={styles.titleText}>
+                  <span>Bebedores de Agua</span>
+                  <strong>{aguaGroup.map(r => r.amigo).join(' & ')}</strong>
+                </div>
               </div>
-            </div>
+            )}
+
+            {cartonGroup.length > 0 && (
+              <div className={styles.titleCard} style={{ borderColor: '#94A3B8' }}>
+                <div className={styles.titleIcon}>
+                  <Icon name="Package" size={28} color="#94A3B8" />
+                </div>
+                <div className={styles.titleText}>
+                  <span>Chuchaqui de Cartón</span>
+                  <strong>{cartonGroup.map(r => r.amigo).join(' & ')}</strong>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className={styles.chartWrap}>
