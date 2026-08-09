@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.venv
+*.sqlite3
+
+# Archivos de la base de datos local que tal vez no quieras versionar con cada voto
+# Descomenta estas líneas si no quieres subir los votos reales al repositorio:
+# votos.json
+# estado.json
+# desempates.json
