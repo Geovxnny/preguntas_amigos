@@ -21,6 +21,7 @@ const INITIAL_RETOS = [
 
 export function RoulettePanel() {
   const [activeTab, setActiveTab] = useState('amigos'); // 'amigos' | 'retos'
+  const [extraAmigos, setExtraAmigos] = useState([]);
   const [spinning, setSpinning] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [winner, setWinner] = useState(null);
@@ -31,11 +32,26 @@ export function RoulettePanel() {
     return [...INITIAL_RETOS];
   });
 
-  const items = activeTab === 'amigos' ? AMIGOS : availableRetos;
+  const friendsItems = [...AMIGOS, ...extraAmigos];
+  const items = activeTab === 'amigos' ? friendsItems : availableRetos;
 
   const resetRetos = () => {
     setAvailableRetos([...INITIAL_RETOS]);
     localStorage.setItem('retos_disponibles_v2', JSON.stringify([...INITIAL_RETOS]));
+  };
+
+  const handleAdd = () => {
+    const isAmigo = activeTab === 'amigos';
+    const text = window.prompt(isAmigo ? "Escribe el nombre de la nueva persona:" : "Escribe el nuevo reto:");
+    if (!text || text.trim() === '') return;
+
+    if (isAmigo) {
+      setExtraAmigos([...extraAmigos, { nombre: text.trim(), icono: 'User', color: '#FBBF24' }]);
+    } else {
+      const newRetos = [...availableRetos, text.trim()];
+      setAvailableRetos(newRetos);
+      localStorage.setItem('retos_disponibles_v2', JSON.stringify(newRetos));
+    }
   };
 
   // Si cambiamos de tab, reseteamos la ruleta
@@ -47,6 +63,17 @@ export function RoulettePanel() {
 
   const spinRoulette = () => {
     if (spinning) return;
+    
+    // Si solo hay un item, no girar, solo mostrarlo
+    if (items.length === 1) {
+      setWinner(items[0]);
+      if (activeTab === 'retos') {
+        setAvailableRetos([]);
+        localStorage.setItem('retos_disponibles_v2', JSON.stringify([]));
+      }
+      return;
+    }
+
     setSpinning(true);
     setWinner(null);
 
@@ -54,9 +81,9 @@ export function RoulettePanel() {
     let current = activeIndex;
     let spins = 0;
     
-    // Forzamos al menos 3-4 vueltas completas para amigos, menos para retos
     const distanceToWinner = (winnerIndex - activeIndex + items.length) % items.length;
-    const baseSpins = activeTab === 'amigos' ? (items.length * 3) : (items.length * 2);
+    // Si quedan pocos retos, nos aseguramos de que haya un número mínimo de giros (ej: 20)
+    const baseSpins = activeTab === 'amigos' ? (items.length * 3) : Math.max(items.length * 2, 25);
     const totalSpins = baseSpins + distanceToWinner;
 
     const spin = () => {
@@ -110,11 +137,20 @@ export function RoulettePanel() {
         >
           <Icon name="Flame" size={18} /> Retos y Preguntas
         </button>
+        
+        <button 
+          className={styles.addBtn}
+          onClick={handleAdd}
+          disabled={spinning}
+          title={activeTab === 'amigos' ? "Añadir persona" : "Añadir reto"}
+        >
+          <Icon name="Plus" size={18} />
+        </button>
       </div>
 
       {activeTab === 'amigos' && (
         <div className={styles.grid}>
-          {AMIGOS.map((amigo, index) => (
+          {friendsItems.map((amigo, index) => (
             <div 
               key={amigo.nombre}
               className={`${styles.card} ${index === activeIndex ? styles.cardActive : ''}`}
