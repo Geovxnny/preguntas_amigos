@@ -214,6 +214,30 @@
   100% { transform: scale(1.2); opacity: 1; }
 }
 
+/* Animación de baile para las barras */
+.bouncingBar path {
+  transform-origin: bottom center;
+  transform-box: fill-box;
+  animation: danceBar 2.5s infinite ease-in-out;
+}
+
+/* Desfasar un poco las animaciones para que no bailen todas igual */
+.bouncingBar path:nth-child(even) {
+  animation-delay: 0.3s;
+  animation-duration: 2.7s;
+}
+.bouncingBar path:nth-child(3n) {
+  animation-delay: 0.6s;
+  animation-duration: 2.3s;
+}
+
+@keyframes danceBar {
+  0%, 100% { transform: scaleY(1) skewX(0deg); }
+  25% { transform: scaleY(0.97) skewX(1.5deg); }
+  50% { transform: scaleY(1.03) skewX(-1deg); }
+  75% { transform: scaleY(0.96) skewX(-2deg); }
+}
+
 @media (max-width: 768px) {
   .podium { flex-direction: column; align-items: center; }
   .titlesRow { flex-direction: column; }

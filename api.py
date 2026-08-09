@@ -16,6 +16,7 @@ import os
 
 VOTES_FILE = "votos.json"
 ESTADO_FILE = "estado.json"
+DESEMPATES_FILE = "desempates.json"
 PIN_ANFITRION = "2026"
 
 AMIGOS = ["Kyu", "Elaina", "Superboy", "Emilio", "Hally", "JL", "Lucho", "Gio"]
@@ -128,6 +129,19 @@ def guardar_estado(pregunta_num: int):
     with open(ESTADO_FILE, "w", encoding="utf-8") as f:
         json.dump({"pregunta_activa": pregunta_num}, f, ensure_ascii=False, indent=2)
 
+def cargar_desempates():
+    if os.path.exists(DESEMPATES_FILE):
+        try:
+            with open(DESEMPATES_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (json.JSONDecodeError, ValueError):
+            pass
+    return {}
+
+def guardar_desempates(des):
+    with open(DESEMPATES_FILE, "w", encoding="utf-8") as f:
+        json.dump(des, f, ensure_ascii=False, indent=2)
+
 def verificar_pin(x_pin: Optional[str]):
     if x_pin != PIN_ANFITRION:
         raise HTTPException(status_code=403, detail="PIN incorrecto")
@@ -154,6 +168,9 @@ class VotoPayload(BaseModel):
 
 class EstadoPayload(BaseModel):
     pregunta_activa: int
+
+class DesempatePayload(BaseModel):
+    amigo: str
 
 # ─── ENDPOINTS ──────────────────────────────────────────
 
@@ -218,12 +235,29 @@ def votar(payload: VotoPayload):
     guardar_votos(votos)
     return {"ok": True, "votos": votos[key]}
 
+@app.get("/desempates")
+def get_desempates():
+    """Devuelve los puntos extra de desempate."""
+    return cargar_desempates()
+
+@app.post("/desempate")
+def add_desempate(payload: DesempatePayload, x_pin: Optional[str] = Header(None)):
+    """Otorga un punto extra de desempate a un amigo tras ganar un volado de moneda."""
+    verificar_pin(x_pin)
+    if payload.amigo not in AMIGOS:
+        raise HTTPException(status_code=400, detail="Amigo no válido")
+    des = cargar_desempates()
+    des[payload.amigo] = des.get(payload.amigo, 0) + 1
+    guardar_desempates(des)
+    return {"ok": True, "desempates": des}
+
 @app.post("/reset")
 def reset_votos(x_pin: Optional[str] = Header(None)):
-    """Reinicia todos los votos (requiere PIN de anfitrión)."""
+    """Reinicia todos los votos y desempates (requiere PIN de anfitrión)."""
     verificar_pin(x_pin)
     guardar_votos({})
-    return {"ok": True, "message": "Votos reiniciados"}
+    guardar_desempates({})
+    return {"ok": True, "message": "Votos y desempates reiniciados"}
 
 @app.post("/reset-estado")
 def reset_estado(x_pin: Optional[str] = Header(None)):

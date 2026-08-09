@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
-import { getVotosPregunta, getTodosVotos } from '../services/api';
+import { getVotosPregunta, getTodosVotos, getDesempates } from '../services/api';
 
 export function useVotes() {
   const [votosPregunta, setVotosPregunta] = useState({});
   const [todosVotos, setTodosVotos] = useState({});
+  const [desempates, setDesempates] = useState({});
   const [loading, setLoading] = useState(false);
   const intervalRef = useRef(null);
 
@@ -21,8 +22,12 @@ export function useVotes() {
 
   const fetchTodosVotos = useCallback(async () => {
     try {
-      const data = await getTodosVotos();
-      setTodosVotos(data);
+      const [votosData, desData] = await Promise.all([
+        getTodosVotos(),
+        getDesempates()
+      ]);
+      setTodosVotos(votosData);
+      setDesempates(desData);
     } catch (err) {
       console.error('Error fetching todos votos:', err);
     }
@@ -44,6 +49,7 @@ export function useVotes() {
   return {
     votosPregunta,
     todosVotos,
+    desempates,
     loading,
     fetchVotosPregunta,
     fetchTodosVotos,

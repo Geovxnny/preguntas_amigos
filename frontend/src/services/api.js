@@ -56,6 +56,14 @@ export const votar = (pregunta_idx, amigo) =>
     body: JSON.stringify({ pregunta_idx, amigo }),
   });
 
+export const getDesempates = () => request('/desempates');
+
+export const addDesempate = (amigo) =>
+  request('/desempate', {
+    method: 'POST',
+    body: JSON.stringify({ amigo }),
+  });
+
 // ── Admin ──────────────────────────────────────────────
 
 export const resetVotos = () =>

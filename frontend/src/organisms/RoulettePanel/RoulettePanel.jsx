@@ -44,9 +44,10 @@ export function RoulettePanel() {
     let current = activeIndex;
     let spins = 0;
     
-    // Forzamos al menos 3-4 vueltas completas
+    // Forzamos al menos 3-4 vueltas completas para amigos, menos para retos
     const distanceToWinner = (winnerIndex - activeIndex + items.length) % items.length;
-    const totalSpins = (items.length * 4) + distanceToWinner;
+    const baseSpins = activeTab === 'amigos' ? (items.length * 3) : (items.length * 2);
+    const totalSpins = baseSpins + distanceToWinner;
 
     const spin = () => {
       spins++;
@@ -54,7 +55,9 @@ export function RoulettePanel() {
       setActiveIndex(current);
 
       if (spins < totalSpins) {
-        const delay = 40 + (spins * spins * 0.05); // Curva de desaceleración suave
+        // Hacemos que gire rápido al principio y más lento al final
+        const deceleration = activeTab === 'amigos' ? 0.05 : 0.02;
+        const delay = 40 + (spins * spins * deceleration); 
         setTimeout(spin, delay);
       } else {
         setSpinning(false);

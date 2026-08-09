@@ -4,13 +4,14 @@ import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { COLOR_POR_AMIGO } from '../../constants/friends';
 import { useVotes } from '../../hooks/useVotes';
+import { addDesempate } from '../../services/api';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, LabelList
 } from 'recharts';
 import styles from './RankingPanel.module.css';
 
-function calcularRanking(todosVotos, amigos) {
+function calcularRanking(todosVotos, amigos, desempates) {
   const puntos = {};
   amigos.forEach(a => { puntos[a] = 0; });
 
@@ -24,8 +25,11 @@ function calcularRanking(todosVotos, amigos) {
   });
 
   return Object.entries(puntos)
-    .map(([amigo, pts]) => ({ amigo, puntos: pts }))
-    .sort((a, b) => b.puntos - a.puntos);
+    .map(([amigo, pts]) => ({ amigo, puntos: pts, desempatePts: desempates[amigo] || 0 }))
+    .sort((a, b) => {
+      if (b.puntos !== a.puntos) return b.puntos - a.puntos;
+      return b.desempatePts - a.desempatePts;
+    });
 }
 
 const AMIGOS_NOMBRES = ['Kyu', 'Elaina', 'Superboy', 'Emilio', 'Hally', 'JL', 'Lucho', 'Gio'];
@@ -51,7 +55,7 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export function RankingPanel() {
-  const { todosVotos, fetchTodosVotos } = useVotes();
+  const { todosVotos, desempates, fetchTodosVotos } = useVotes();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [tieBreakerOpen, setTieBreakerOpen] = useState(false);
   const [selectedTieGroup, setSelectedTieGroup] = useState(null);
@@ -68,20 +72,22 @@ export function RankingPanel() {
     setTimeout(() => setIsRefreshing(false), 500);
   };
 
-  const ranking = calcularRanking(todosVotos, AMIGOS_NOMBRES);
+  const ranking = calcularRanking(todosVotos, AMIGOS_NOMBRES, desempates || {});
   
   // Calcular posiciones reales manejando empates
   const rankedWithPos = [];
   let currentPos = 0;
   let currentPoints = -1;
+  let currentDes = -1;
   let countAtPos = 0;
   
   ranking.forEach((r) => {
-    if (r.puntos !== currentPoints) {
+    if (r.puntos !== currentPoints || r.desempatePts !== currentDes) {
       currentPos += countAtPos + (currentPoints === -1 ? 0 : 1);
       if (currentPoints === -1) currentPos = 0;
       countAtPos = 0;
       currentPoints = r.puntos;
+      currentDes = r.desempatePts;
     } else {
       countAtPos++;
     }
@@ -93,17 +99,20 @@ export function RankingPanel() {
   // Extraer top 3
   const top3 = rankedWithPos.filter(r => r.posicion < 3);
 
-  // Identificar empates
+  // Identificar empates reales
   const ties = {};
   rankedWithPos.forEach(r => {
-    if (!ties[r.puntos]) ties[r.puntos] = [];
-    ties[r.puntos].push(r);
+    const key = `${r.puntos}-${r.desempatePts}`;
+    if (!ties[key]) ties[key] = [];
+    ties[key].push(r);
   });
   const tiedGroups = Object.values(ties).filter(group => group.length > 1 && group[0].puntos > 0);
 
   // Títulos del grupo
+  const maxPos = rankedWithPos.length > 0 ? rankedWithPos[rankedWithPos.length - 1].posicion : 0;
   const reyGroup = rankedWithPos.filter(r => r.posicion === 0 && r.puntos > 0);
-  const cartonGroup = rankedWithPos.filter(r => r.posicion === rankedWithPos[rankedWithPos.length - 1].posicion && totalPuntos > 0);
+  const aprendicesGroup = rankedWithPos.filter(r => r.posicion > 0 && r.posicion < maxPos && r.puntos > 0);
+  const cartonGroup = rankedWithPos.filter(r => r.posicion === maxPos && totalPuntos > 0);
 
   const startTieBreaker = (group) => {
     setSelectedTieGroup(group);
@@ -119,6 +128,10 @@ export function RankingPanel() {
         setResolvingTie(false);
         const finalWinner = group[Math.floor(Math.random() * group.length)];
         setTieWinner(finalWinner);
+        // Persistir el punto de desempate en el backend
+        addDesempate(finalWinner.amigo).then(() => {
+          fetchTodosVotos(); // Actualiza el ranking al momento
+        });
       }
     }, 80);
   };
@@ -157,7 +170,7 @@ export function RankingPanel() {
                 puntos={r.puntos}
                 posicion={r.posicion}
                 delay={i * 150}
-                isTie={ties[r.puntos] && ties[r.puntos].length > 1}
+                isTie={ties[`${r.puntos}-${r.desempatePts}`] && ties[`${r.puntos}-${r.desempatePts}`].length > 1}
               />
             ))}
           </div>
@@ -165,17 +178,34 @@ export function RankingPanel() {
           {/* Títulos especiales */}
           <div className={styles.titlesRow}>
             <div className={styles.titleCard} style={{ borderColor: '#FBBF24' }}>
-              <div className={styles.titleIcon}>👑</div>
+              <div className={styles.titleIcon}>
+                <Icon name="Crown" size={32} color="#FBBF24" />
+              </div>
               <div className={styles.titleText}>
                 <span>Rey del Chuchaqui</span>
-                <strong>{reyGroup.map(r => r.amigo).join(' & ')}</strong>
+                <strong>{reyGroup.map(r => r.amigo).join(' & ') || 'Nadie'}</strong>
               </div>
             </div>
+            
+            {aprendicesGroup.length > 0 && (
+              <div className={styles.titleCard} style={{ borderColor: '#38BDF8' }}>
+                <div className={styles.titleIcon}>
+                  <Icon name="Users" size={32} color="#38BDF8" />
+                </div>
+                <div className={styles.titleText}>
+                  <span>Aprendices del Chuchaqui</span>
+                  <strong>{aprendicesGroup.map(r => r.amigo).join(', ')}</strong>
+                </div>
+              </div>
+            )}
+
             <div className={styles.titleCard} style={{ borderColor: '#94A3B8' }}>
-              <div className={styles.titleIcon}>📦</div>
+              <div className={styles.titleIcon}>
+                <Icon name="Package" size={32} color="#94A3B8" />
+              </div>
               <div className={styles.titleText}>
                 <span>Chuchaqui de Cartón</span>
-                <strong>{cartonGroup.map(r => r.amigo).join(' & ')}</strong>
+                <strong>{cartonGroup.map(r => r.amigo).join(' & ') || 'Nadie'}</strong>
               </div>
             </div>
           </div>
@@ -194,7 +224,13 @@ export function RankingPanel() {
                   cursor={{ fill: 'rgba(255,255,255,0.08)' }}
                   content={<CustomTooltip />}
                 />
-                <Bar dataKey="puntos" radius={[10, 10, 0, 0]} isAnimationActive animationDuration={700}>
+                <Bar 
+                  dataKey="puntos" 
+                  radius={[10, 10, 0, 0]} 
+                  isAnimationActive 
+                  animationDuration={700}
+                  className={styles.bouncingBar}
+                >
                   <LabelList
                     dataKey="posicion"
                     position="top"
@@ -253,9 +289,14 @@ export function RankingPanel() {
                 </div>
                 
                 {!resolvingTie && tieWinner && (
-                  <Button variant="ghost" size="sm" onClick={() => { setSelectedTieGroup(null); setTieWinner(null); }} style={{ marginTop: '12px' }}>
-                    Volver
-                  </Button>
+                  <div style={{ marginTop: '16px' }}>
+                    <p style={{ color: '#FBBF24', fontSize: '0.9rem', marginBottom: '8px' }}>
+                      El ganador subió un puesto en el ranking.
+                    </p>
+                    <Button variant="ghost" size="sm" onClick={() => { setSelectedTieGroup(null); setTieWinner(null); if(tiedGroups.length <= 1) setTieBreakerOpen(false); }}>
+                      Volver
+                    </Button>
+                  </div>
                 )}
               </div>
             )}
