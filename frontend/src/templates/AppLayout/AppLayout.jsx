@@ -11,7 +11,8 @@ import styles from './AppLayout.module.css';
  */
 export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLogout, authError, preguntaActiva, totalPreguntas }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const appUrl = window.location.origin;
+  const hostname = window.location.hostname === 'localhost' ? __LOCAL_IP__ : window.location.hostname;
+  const appUrl = `${window.location.protocol}//${hostname}:${window.location.port}`;
 
   const navItems = [
     { id: 'mobile',  label: 'Votar',     icon: 'Smartphone' },
@@ -74,14 +75,14 @@ export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLog
           <div className={styles.statusCard}>
             <Icon name="Radio" size={16} color="rgba(255,255,255,0.6)" />
             <span className={styles.statusText}>
-              Active question: <strong>{preguntaActiva}</strong> / {totalPreguntas}
+              Pregunta activa: <strong>{preguntaActiva}</strong> / {totalPreguntas}
             </span>
           </div>
 
           {/* QR Code */}
           <div className={styles.qrWrap}>
             <p className={styles.qrLabel}>
-              <Icon name="Wifi" size={14} /> WiFi Access
+              <Icon name="Wifi" size={14} /> Acceso WiFi
             </p>
             <div className={styles.qrBox}>
               <QRCode value={appUrl} size={120} fgColor="#1E1B4B" bgColor="white" />
@@ -96,7 +97,7 @@ export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLog
           {!isHost ? (
             <div className={styles.hostSection}>
               <p className={styles.hostLabel}>
-                <Icon name="Lock" size={14} /> Host mode
+                <Icon name="Lock" size={14} /> Modo anfitrión
               </p>
               <PinInput onSubmit={onLogin} error={authError} />
             </div>
@@ -104,10 +105,10 @@ export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLog
             <div className={styles.hostSection}>
               <div className={styles.hostActive}>
                 <Icon name="Unlock" size={16} color="#22C55E" />
-                <span>Host active</span>
+                <span>Anfitrión activo</span>
               </div>
               <Button variant="ghost" size="sm" fullWidth onClick={onLogout} id="logout-btn">
-                <Icon name="LogOut" size={14} /> Sign out
+                <Icon name="LogOut" size={14} /> Cerrar sesión
               </Button>
             </div>
           )}

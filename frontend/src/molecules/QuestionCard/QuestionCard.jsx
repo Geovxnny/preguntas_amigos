@@ -10,7 +10,7 @@ export function QuestionCard({ numero, total, texto }) {
     <div className={styles.card}>
       <div className={styles.badge}>
         <Icon name="HelpCircle" size={16} color="#1E1B4B" />
-        Question {numero} <span className={styles.total}>/ {total}</span>
+        Pregunta {numero} <span className={styles.total}>/ {total}</span>
       </div>
       <p className={styles.texto}>{texto}</p>
     </div>

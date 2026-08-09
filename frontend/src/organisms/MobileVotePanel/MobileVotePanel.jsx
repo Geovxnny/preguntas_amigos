@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FriendCard } from '../../molecules/FriendCard/FriendCard';
 import { Icon } from '../../atoms/Icon/Icon';
 import { AMIGOS } from '../../constants/friends';
@@ -11,14 +11,19 @@ import styles from './MobileVotePanel.module.css';
  */
 export function MobileVotePanel({ preguntaActiva, onSync }) {
   const [toast, setToast] = useState(null);
-  const [lastVote, setLastVote] = useState(null);
+  const [lastVote, setLastVote] = useState(() => localStorage.getItem(`vote_q${preguntaActiva}`));
+
+  useEffect(() => {
+    setLastVote(localStorage.getItem(`vote_q${preguntaActiva}`));
+  }, [preguntaActiva]);
 
   const handleVote = async (nombre) => {
     try {
       await votar(preguntaActiva - 1, nombre);
+      localStorage.setItem(`vote_q${preguntaActiva}`, nombre);
       setLastVote(nombre);
-      setToast({ text: `Voted for ${nombre}!`, type: 'success' });
-      setTimeout(() => { setToast(null); setLastVote(null); }, 2500);
+      setToast({ text: `¡Votaste por ${nombre}!`, type: 'success' });
+      setTimeout(() => setToast(null), 2500);
     } catch (err) {
       setToast({ text: `Error: ${err.message}`, type: 'error' });
       setTimeout(() => setToast(null), 3000);
@@ -45,7 +50,7 @@ export function MobileVotePanel({ preguntaActiva, onSync }) {
 
       <div className={styles.cta}>
         <Icon name="MousePointerClick" size={20} />
-        <span>Choose your answer</span>
+        <span>Elige tu respuesta</span>
       </div>
 
       {/* Grid de amigos */}
