@@ -4,20 +4,19 @@ import { Button } from '../../atoms/Button/Button';
 import { AMIGOS } from '../../constants/friends';
 import styles from './RoulettePanel.module.css';
 
-const RETOS = [
-  "¿Cuándo diste tu último beso y a quién?",
-  "Muestra la última foto de tu galería en el teléfono",
-  "¿A quién de este grupo salvarías primero en un incendio?",
-  "Imita a alguien del grupo hasta que adivinemos quién es",
-  "Toma 1 shot o dale 1 shot a alguien",
-  "¿Cuál es tu mayor arrepentimiento amoroso?",
-  "Muestra el último mensaje de WhatsApp que enviaste",
-  "¿Cuál es el rumor más falso que has escuchado de ti?",
-  "Si tuvieras que eliminar a uno del grupo para sobrevivir, ¿quién sería?",
-  "Llama a una pizzería e intenta pedir unos tacos",
-  "Verdad cruda: ¿qué es lo que más te molesta del grupo?",
-  "Haz 15 flexiones de pecho ahora mismo",
-  "Dejar que el grupo envíe un mensaje desde tu celular al azar",
+const INITIAL_RETOS = [
+  "Te salvaste",
+  "Tómate 2 vasos de cerveza o de lo que estén bebiendo",
+  "Nombre de la ultima persona que besaste",
+  "¿Quién fue tu \"casi algo\" más doloroso o vergonzoso?",
+  "Haz un brindis por la ocasión",
+  "Dale 1 shot a alguien",
+  "Haz 15 flexiones de pecho",
+  "Cántale una canción romántica a una botella por 15 segundos",
+  "Todos en la mesa toman 1 shot (¡salud general!)",
+  "Elige a 2 personas para que se tomen un shot contigo",
+  "Doble castigo: Tómate 1 shot y haz 10 sentadillas seguidas",
+  "Te salvaste",
 ];
 
 export function RoulettePanel() {
@@ -26,7 +25,18 @@ export function RoulettePanel() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [winner, setWinner] = useState(null);
 
-  const items = activeTab === 'amigos' ? AMIGOS : RETOS;
+  const [availableRetos, setAvailableRetos] = useState(() => {
+    const saved = localStorage.getItem('retos_disponibles_v2');
+    if (saved) return JSON.parse(saved);
+    return [...INITIAL_RETOS];
+  });
+
+  const items = activeTab === 'amigos' ? AMIGOS : availableRetos;
+
+  const resetRetos = () => {
+    setAvailableRetos([...INITIAL_RETOS]);
+    localStorage.setItem('retos_disponibles_v2', JSON.stringify([...INITIAL_RETOS]));
+  };
 
   // Si cambiamos de tab, reseteamos la ruleta
   useEffect(() => {
@@ -61,7 +71,17 @@ export function RoulettePanel() {
         setTimeout(spin, delay);
       } else {
         setSpinning(false);
-        setWinner(items[winnerIndex]);
+        const wonItem = items[winnerIndex];
+        setWinner(wonItem);
+        
+        if (activeTab === 'retos') {
+          setAvailableRetos((prev) => {
+            const newRetos = [...prev];
+            newRetos.splice(winnerIndex, 1);
+            localStorage.setItem('retos_disponibles_v2', JSON.stringify(newRetos));
+            return newRetos;
+          });
+        }
       }
     };
     spin();
@@ -113,13 +133,22 @@ export function RoulettePanel() {
         <div className={styles.retoContainer}>
           <div className={`${styles.retoCard} ${(!spinning && winner && typeof winner === 'string') ? styles.retoCardActive : ''}`}>
             <span className={styles.retoText}>
-              {spinning ? items[activeIndex] : (typeof winner === 'string' ? winner : "¿Quién será la próxima víctima?")}
+              {spinning ? items[activeIndex] : (typeof winner === 'string' ? winner : (items.length > 0 ? "¿Quién será la próxima víctima?" : "No hay retos disponibles"))}
             </span>
           </div>
         </div>
       )}
 
-      {!spinning && !winner && (
+      {activeTab === 'retos' && availableRetos.length === 0 && !spinning && !winner && (
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <p style={{ color: '#FBBF24', fontSize: '1.2rem', marginBottom: '16px', fontWeight: 600 }}>¡Ya no hay más retos en la lista!</p>
+          <Button onClick={resetRetos} size="md" variant="danger">
+            <Icon name="RefreshCw" size={20} /> Reiniciar Retos
+          </Button>
+        </div>
+      )}
+
+      {!(activeTab === 'retos' && availableRetos.length === 0) && !spinning && !winner && (
         <Button size="lg" onClick={spinRoulette} style={{ padding: '0 40px', fontSize: '1.2rem' }}>
           <Icon name="PlayCircle" size={24} /> ¡Girar Ruleta!
         </Button>
