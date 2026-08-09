@@ -234,8 +234,9 @@ export function RankingPanel() {
                   <LabelList
                     dataKey="posicion"
                     position="top"
+                    offset={25}
                     formatter={(val) => `${val + 1}º`}
-                    style={{ fill: 'rgba(255,255,255,0.7)', fontWeight: 600, fontSize: 14, fontFamily: "'Nunito', sans-serif" }}
+                    style={{ fill: 'rgba(255,255,255,0.9)', fontWeight: 800, fontSize: 24, fontFamily: "'Nunito', sans-serif" }}
                   />
                   {rankedWithPos.map((entry) => (
                     <Cell key={entry.amigo} fill={COLOR_POR_AMIGO[entry.amigo] || '#A855F7'} />

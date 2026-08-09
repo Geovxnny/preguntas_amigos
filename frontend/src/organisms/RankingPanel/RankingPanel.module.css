@@ -214,19 +214,23 @@
   100% { transform: scale(1.2); opacity: 1; }
 }
 
-/* Animación de baile para las barras */
-.bouncingBar path {
+/* Animación de baile para las barras y los números */
+.bouncingBar path,
+:global(.recharts-label-list .recharts-layer) {
   transform-origin: bottom center;
   transform-box: fill-box;
   animation: danceBar 2.5s infinite ease-in-out;
 }
 
 /* Desfasar un poco las animaciones para que no bailen todas igual */
-.bouncingBar path:nth-child(even) {
+.bouncingBar path:nth-child(even),
+:global(.recharts-label-list .recharts-layer:nth-child(even)) {
   animation-delay: 0.3s;
   animation-duration: 2.7s;
 }
-.bouncingBar path:nth-child(3n) {
+
+.bouncingBar path:nth-child(3n),
+:global(.recharts-label-list .recharts-layer:nth-child(3n)) {
   animation-delay: 0.6s;
   animation-duration: 2.3s;
 }

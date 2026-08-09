@@ -80,7 +80,7 @@ export function MobileVotePanel({ preguntaActiva, onSync }) {
       {toast && (
         <div className={`${styles.toast} ${toast.type === 'error' ? styles.toastError : ''}`}>
           <Icon name={toast.type === 'error' ? 'AlertCircle' : 'CheckCircle'} size={16} />
-          {toast.text}
+          <span style={{ marginLeft: '8px' }}>{toast.text}</span>
         </div>
       )}
     </div>
