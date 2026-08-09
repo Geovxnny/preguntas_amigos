@@ -11,7 +11,7 @@ import styles from './AppLayout.module.css';
  */
 export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLogout, authError, preguntaActiva, totalPreguntas }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const hostname = window.location.hostname === 'localhost' ? __LOCAL_IP__ : window.location.hostname;
+  const hostname = window.location.hostname === 'localhost' ? import.meta.env.VITE_LOCAL_IP : window.location.hostname;
   const appUrl = `${window.location.protocol}//${hostname}:${window.location.port}`;
 
   const navItems = [

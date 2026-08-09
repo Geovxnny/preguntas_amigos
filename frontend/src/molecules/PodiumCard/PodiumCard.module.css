@@ -68,3 +68,16 @@
   80%  { transform: scale(0.97); }
   100% { transform: scale(1) translateY(0); }
 }
+
+.cardSmall {
+  animation: bounceInSmall 0.7s ease both;
+  margin: -10px -15px; /* Compensa el escalado para que se vean juntos */
+  z-index: 0;
+}
+
+@keyframes bounceInSmall {
+  0%   { opacity: 0; transform: scale(0.4) translateY(30px); }
+  60%  { opacity: 1; transform: scale(0.8); }
+  80%  { transform: scale(0.7); }
+  100% { transform: scale(0.75) translateY(0); }
+}

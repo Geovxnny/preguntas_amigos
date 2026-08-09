@@ -212,7 +212,7 @@ export function RoulettePanel() {
               ¡{winner.nombre}!
             </h2>
           )}
-          <div style={{ marginTop: activeTab === 'amigos' ? '0' : '24px' }}>
+          <div style={{ marginTop: '24px' }}>
             {!(activeTab === 'retos' && availableRetos.length === 0) && (
               <Button size="md" variant="ghost" onClick={spinRoulette}>
                 <Icon name="RefreshCw" size={18} /> Girar de nuevo

@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import os from 'os'
+import dns from 'node:dns'
+
+dns.setDefaultResultOrder('ipv4first')
 
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
@@ -18,7 +21,7 @@ function getLocalIP() {
 export default defineConfig({
   plugins: [react()],
   define: {
-    __LOCAL_IP__: JSON.stringify(getLocalIP()),
+    'import.meta.env.VITE_LOCAL_IP': JSON.stringify(getLocalIP()),
   },
   server: {
     // Exponer en la red WiFi para que los amigos puedan entrar desde el celular

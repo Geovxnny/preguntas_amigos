@@ -4,7 +4,7 @@ import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { COLOR_POR_AMIGO } from '../../constants/friends';
 import { useVotes } from '../../hooks/useVotes';
-import { desempateGrupo } from '../../services/api';
+import { desempateGrupo, resetVotos } from '../../services/api';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, LabelList
@@ -74,6 +74,17 @@ export function RankingPanel() {
     setIsRefreshing(true);
     await fetchTodosVotos();
     setTimeout(() => setIsRefreshing(false), 500);
+  };
+
+  const handleReset = async () => {
+    if (window.confirm('¿Seguro que quieres borrar todos los votos? Esto reiniciará el ranking a cero y no se puede deshacer.')) {
+      try {
+        await resetVotos();
+        await fetchTodosVotos();
+      } catch (err) {
+        console.error("Error borrando votos:", err);
+      }
+    }
   };
 
   const ranking = calcularRanking(todosVotos, AMIGOS_NOMBRES, desempates || {});
@@ -175,6 +186,9 @@ export function RankingPanel() {
               <Icon name="Swords" size={16} /> Desempatar
             </Button>
           )}
+          <Button variant="danger" size="sm" onClick={handleReset}>
+            <Icon name="Trash2" size={16} /> Borrar Todo
+          </Button>
           <Button variant="ghost" size="sm" onClick={handleRefresh} loading={isRefreshing} id="ranking-refresh">
             <Icon name="RefreshCw" size={16} /> Actualizar
           </Button>
@@ -189,7 +203,7 @@ export function RankingPanel() {
       ) : (
         <>
           <div className={styles.podium}>
-            {top3.map((r, i) => (
+            {rankedWithPos.map((r, i) => (
               <PodiumCard
                 key={r.amigo}
                 amigo={r.amigo}

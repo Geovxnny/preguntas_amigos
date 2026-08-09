@@ -19,10 +19,11 @@ export function PodiumCard({ amigo, puntos, posicion, delay = 0, isTie = false }
   const medal = MEDAL_CONFIG[posicion] || { icon: 'Star', color: '#A855F7', label: `${posicion + 1}º` };
   const color = COLOR_POR_AMIGO[amigo] || '#A855F7';
   const icono = ICONO_POR_AMIGO[amigo] || 'User';
+  const isTop3 = posicion < 3;
 
   return (
     <div
-      className={styles.card}
+      className={`${styles.card} ${!isTop3 ? styles.cardSmall : ''}`}
       style={{ '--card-color': color, animationDelay: `${delay}ms` }}
     >
       <div className={styles.medal}>
