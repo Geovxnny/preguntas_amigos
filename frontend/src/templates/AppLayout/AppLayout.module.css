@@ -1,0 +1,222 @@
+.layout {
+  display: flex;
+  min-height: 100dvh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 280px;
+  min-height: 100dvh;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.12);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.sidebarInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+  min-height: 100%;
+}
+
+/* ── Logo ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+}
+
+.logoEmoji { font-size: 2.4rem; }
+
+.logoTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+.logoSub {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── Nav ── */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  width: 100%;
+  text-align: left;
+}
+
+.navItem:hover { background: rgba(255,255,255,0.1); color: white; }
+
+.navItemActive {
+  background: rgba(255,255,255,0.18) !important;
+  color: white !important;
+  box-shadow: inset 3px 0 0 white;
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+  margin: var(--space-2) 0;
+}
+
+/* ── Status card ── */
+.statusCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+}
+
+.statusText {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.7);
+}
+
+/* ── QR ── */
+.qrWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.qrLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.6);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.qrBox {
+  background: white;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.qrUrl {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+  word-break: break-all;
+  text-align: center;
+}
+
+/* ── Host section ── */
+.hostSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.hostLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.hostActive {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: #4ade80;
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+/* ── Main content ── */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) 0;
+}
+
+/* ── Mobile: hamburger + overlay ── */
+.menuToggle {
+  display: none;
+  position: fixed;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 200;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius-full);
+  width: 48px;
+  height: 48px;
+  color: white;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 150;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+  .menuToggle { display: flex; }
+  .overlay    { display: block; }
+
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    z-index: 160;
+    transition: left var(--transition-normal);
+    height: 100dvh;
+  }
+
+  .sidebarOpen { left: 0; }
+
+  .main {
+    padding: var(--space-4);
+    padding-top: calc(var(--space-4) + 64px);
+  }
+}
