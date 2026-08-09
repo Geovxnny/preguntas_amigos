@@ -213,7 +213,7 @@ export function RankingPanel() {
           {/* Gráfico de barras */}
           <div className={styles.chartWrap}>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={rankedWithPos} margin={{ top: 20, right: 16, left: 0, bottom: 0 }}>
+              <BarChart data={rankedWithPos} margin={{ top: 60, right: 16, left: 0, bottom: 0 }}>
                 <XAxis
                   dataKey="amigo"
                   tick={{ fill: 'white', fontFamily: "'Fredoka', sans-serif", fontSize: 14, fontWeight: 600 }}
@@ -221,7 +221,7 @@ export function RankingPanel() {
                 />
                 <YAxis hide />
                 <Tooltip
-                  cursor={{ fill: 'rgba(255,255,255,0.08)' }}
+                  cursor={false}
                   content={<CustomTooltip />}
                 />
                 <Bar 

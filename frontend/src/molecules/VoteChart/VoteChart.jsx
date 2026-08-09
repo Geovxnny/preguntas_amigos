@@ -57,16 +57,16 @@ export function VoteChart({ votos }) {
         <Icon name="Inbox" size={20} color="#FBBF24" /> <strong>{total}</strong> votos totales
       </div>
       <ResponsiveContainer width="100%" height={360}>
-        <BarChart data={data} margin={{ top: 24, right: 20, left: 0, bottom: 0 }}>
+        <BarChart data={data} margin={{ top: 40, right: 20, left: 0, bottom: 0 }}>
           <XAxis
             dataKey="amigo"
-            tick={{ fill: 'white', fontFamily: "'Fredoka', sans-serif", fontSize: 16, fontWeight: 600 }}
+            tick={{ fill: 'white', fontFamily: "'Fredoka', sans-serif", fontSize: 15, fontWeight: 600 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis hide />
           <Tooltip
-            cursor={{ fill: 'rgba(255,255,255,0.08)' }}
+            cursor={false}
             content={<CustomTooltip />}
           />
           <Bar dataKey="votos" radius={[12, 12, 0, 0]} isAnimationActive animationDuration={600}>
