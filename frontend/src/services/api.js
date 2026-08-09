@@ -58,10 +58,10 @@ export const votar = (pregunta_idx, amigo) =>
 
 export const getDesempates = () => request('/desempates');
 
-export const addDesempate = (amigo) =>
-  request('/desempate', {
+export const desempateGrupo = (orden) =>
+  request('/desempate-grupo', {
     method: 'POST',
-    body: JSON.stringify({ amigo }),
+    body: JSON.stringify({ orden }),
   });
 
 // ── Admin ──────────────────────────────────────────────

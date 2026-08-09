@@ -4,7 +4,7 @@ import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { COLOR_POR_AMIGO } from '../../constants/friends';
 import { useVotes } from '../../hooks/useVotes';
-import { addDesempate } from '../../services/api';
+import { desempateGrupo } from '../../services/api';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Cell, LabelList
@@ -57,8 +57,12 @@ const CustomTooltip = ({ active, payload }) => {
 export function RankingPanel() {
   const { todosVotos, desempates, fetchTodosVotos } = useVotes();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  // Tie Breaker State
   const [tieBreakerOpen, setTieBreakerOpen] = useState(false);
   const [selectedTieGroup, setSelectedTieGroup] = useState(null);
+  const [remainingTied, setRemainingTied] = useState([]);
+  const [resolvedTied, setResolvedTied] = useState([]);
   const [tieWinner, setTieWinner] = useState(null);
   const [resolvingTie, setResolvingTie] = useState(false);
 
@@ -74,7 +78,6 @@ export function RankingPanel() {
 
   const ranking = calcularRanking(todosVotos, AMIGOS_NOMBRES, desempates || {});
   
-  // Calcular posiciones reales manejando empates
   const rankedWithPos = [];
   let currentPos = 0;
   let currentPoints = -1;
@@ -95,11 +98,8 @@ export function RankingPanel() {
   });
 
   const totalPuntos = rankedWithPos.reduce((s, r) => s + r.puntos, 0);
-  
-  // Extraer top 3
   const top3 = rankedWithPos.filter(r => r.posicion < 3);
 
-  // Identificar empates reales
   const ties = {};
   rankedWithPos.forEach(r => {
     const key = `${r.puntos}-${r.desempatePts}`;
@@ -108,7 +108,6 @@ export function RankingPanel() {
   });
   const tiedGroups = Object.values(ties).filter(group => group.length > 1 && group[0].puntos > 0);
 
-  // Títulos del grupo
   const maxPos = rankedWithPos.length > 0 ? rankedWithPos[rankedWithPos.length - 1].posicion : 0;
   const reyGroup = rankedWithPos.filter(r => r.posicion === 0 && r.puntos > 0);
   const aprendicesGroup = rankedWithPos.filter(r => r.posicion > 0 && r.posicion < maxPos && r.puntos > 0);
@@ -116,22 +115,49 @@ export function RankingPanel() {
 
   const startTieBreaker = (group) => {
     setSelectedTieGroup(group);
+    setRemainingTied(group);
+    setResolvedTied([]);
+    setTieWinner(null);
+  };
+
+  const closeTieBreaker = () => {
+    setTieBreakerOpen(false);
+    setSelectedTieGroup(null);
+    setRemainingTied([]);
+    setResolvedTied([]);
+    setTieWinner(null);
+  };
+
+  const throwCoin = () => {
+    if (remainingTied.length < 2) return;
     setTieWinner(null);
     setResolvingTie(true);
     let spins = 0;
     
     const interval = setInterval(() => {
       spins++;
-      setTieWinner(group[spins % group.length]);
+      // Just for visual effect during spin, pick random
+      setTieWinner(remainingTied[spins % remainingTied.length]);
       if (spins > 30) {
         clearInterval(interval);
         setResolvingTie(false);
-        const finalWinner = group[Math.floor(Math.random() * group.length)];
+        const finalWinner = remainingTied[Math.floor(Math.random() * remainingTied.length)];
         setTieWinner(finalWinner);
-        // Persistir el punto de desempate en el backend
-        addDesempate(finalWinner.amigo).then(() => {
-          fetchTodosVotos(); // Actualiza el ranking al momento
-        });
+        
+        const newResolved = [...resolvedTied, finalWinner];
+        const newRemaining = remainingTied.filter(g => g.amigo !== finalWinner.amigo);
+        
+        setResolvedTied(newResolved);
+        setRemainingTied(newRemaining);
+        
+        if (newRemaining.length === 1) {
+          const finalOrder = [...newResolved, newRemaining[0]];
+          setResolvedTied(finalOrder);
+          setRemainingTied([]);
+          desempateGrupo(finalOrder.map(g => g.amigo)).then(() => {
+            fetchTodosVotos();
+          });
+        }
       }
     }, 80);
   };
@@ -161,7 +187,6 @@ export function RankingPanel() {
         </div>
       ) : (
         <>
-          {/* Podio */}
           <div className={styles.podium}>
             {top3.map((r, i) => (
               <PodiumCard
@@ -175,7 +200,6 @@ export function RankingPanel() {
             ))}
           </div>
 
-          {/* Títulos especiales */}
           <div className={styles.titlesRow}>
             <div className={styles.titleCard} style={{ borderColor: '#FBBF24' }}>
               <div className={styles.titleIcon}>
@@ -210,7 +234,6 @@ export function RankingPanel() {
             </div>
           </div>
 
-          {/* Gráfico de barras */}
           <div className={styles.chartWrap}>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={rankedWithPos} margin={{ top: 60, right: 16, left: 0, bottom: 0 }}>
@@ -252,7 +275,7 @@ export function RankingPanel() {
       {tieBreakerOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <button className={styles.closeBtn} onClick={() => { setTieBreakerOpen(false); setTieWinner(null); setSelectedTieGroup(null); }}>
+            <button className={styles.closeBtn} onClick={closeTieBreaker}>
               <Icon name="X" size={24} />
             </button>
             <h2 className={styles.modalTitle}>⚖️ Zona de Desempate</h2>
@@ -261,7 +284,7 @@ export function RankingPanel() {
               <div className={styles.tieGroupsList}>
                 <p>Selecciona un grupo para desempatar al azar:</p>
                 {tiedGroups.map((group, idx) => (
-                  <button key={idx} className={styles.tieGroupBtn} onClick={() => setSelectedTieGroup(group)}>
+                  <button key={idx} className={styles.tieGroupBtn} onClick={() => startTieBreaker(group)}>
                     Empate por el <strong>{group[0].posicion + 1}º lugar</strong> ({group[0].puntos} pts)
                     <br/>
                     <small>{group.map(g => g.amigo).join(' vs ')}</small>
@@ -270,35 +293,60 @@ export function RankingPanel() {
               </div>
             ) : (
               <div className={styles.tieArena}>
-                <h3>{selectedTieGroup.map(g => g.amigo).join(' vs ')}</h3>
-                <div className={styles.tieWinnerDisplay}>
-                  {tieWinner ? (
-                    <div className={`${styles.tieWinnerCard} ${!resolvingTie ? styles.tieWinnerFinal : ''}`} style={{ '--winner-color': COLOR_POR_AMIGO[tieWinner.amigo] }}>
-                      {tieWinner.amigo}
+                <div className={styles.tieColumns}>
+                  {/* Columna Izquierda: Lanzar Moneda */}
+                  <div className={styles.coinSection}>
+                    <h3 style={{ marginBottom: '16px', color: 'rgba(255,255,255,0.8)' }}>
+                      En juego: <strong>{remainingTied.map(g => g.amigo).join(' vs ')}</strong>
+                    </h3>
+                    
+                    <div className={styles.coinWrapper}>
+                      <div className={`${styles.coin3D} ${resolvingTie ? styles.isFlipping : ''}`}>
+                        <div className={styles.coinFront} style={{ backgroundColor: tieWinner && !resolvingTie ? COLOR_POR_AMIGO[tieWinner.amigo] : '#1E1B4B' }}>
+                          {tieWinner && !resolvingTie ? tieWinner.amigo : '?'}
+                        </div>
+                        <div className={styles.coinBack}>
+                          <Icon name="Coins" size={48} color="#FBBF24" />
+                        </div>
+                      </div>
                     </div>
-                  ) : (
-                    <div className={styles.tiePlaceholder}>¿Quién ganará?</div>
-                  )}
-                </div>
-                
-                <div style={{ marginTop: '24px' }}>
-                  {!resolvingTie && (
-                    <Button onClick={() => startTieBreaker(selectedTieGroup)}>
-                      <Icon name="Coins" size={20} /> Lanzar Moneda
-                    </Button>
-                  )}
-                </div>
-                
-                {!resolvingTie && tieWinner && (
-                  <div style={{ marginTop: '16px' }}>
-                    <p style={{ color: '#FBBF24', fontSize: '0.9rem', marginBottom: '8px' }}>
-                      El ganador subió un puesto en el ranking.
-                    </p>
-                    <Button variant="ghost" size="sm" onClick={() => { setSelectedTieGroup(null); setTieWinner(null); if(tiedGroups.length <= 1) setTieBreakerOpen(false); }}>
-                      Volver
-                    </Button>
+                    
+                    {remainingTied.length > 0 ? (
+                      <Button onClick={throwCoin} disabled={resolvingTie}>
+                        <Icon name="Coins" size={20} /> Lanzar Moneda
+                      </Button>
+                    ) : (
+                      <p style={{ color: '#FBBF24', fontSize: '1rem', marginTop: '16px', fontWeight: 600 }}>
+                        ¡Desempate finalizado! Ranking actualizado.
+                      </p>
+                    )}
                   </div>
-                )}
+                  
+                  {/* Columna Derecha: Mini Ranking */}
+                  <div className={styles.miniRankingSection}>
+                    <h4>Mini Ranking</h4>
+                    <div className={styles.miniRankingList}>
+                      {resolvedTied.map((r, i) => (
+                        <div key={r.amigo} className={styles.miniRankItem} style={{ '--amigo-color': COLOR_POR_AMIGO[r.amigo] }}>
+                          <span className={styles.miniRankPos}>{selectedTieGroup[0].posicion + 1 + i}º</span>
+                          <span className={styles.miniRankName}>{r.amigo}</span>
+                        </div>
+                      ))}
+                      {remainingTied.map((r, i) => (
+                        <div key={r.amigo} className={styles.miniRankItemPending}>
+                          <span className={styles.miniRankPos}>{selectedTieGroup[0].posicion + 1 + resolvedTied.length + i}º</span>
+                          <span className={styles.miniRankName}>...</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '24px', textAlign: 'center' }}>
+                  <Button variant="ghost" size="sm" onClick={() => { if(tiedGroups.length <= 1) closeTieBreaker(); else setSelectedTieGroup(null); }}>
+                    Volver a Empates
+                  </Button>
+                </div>
               </div>
             )}
           </div>

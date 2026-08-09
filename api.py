@@ -169,8 +169,8 @@ class VotoPayload(BaseModel):
 class EstadoPayload(BaseModel):
     pregunta_activa: int
 
-class DesempatePayload(BaseModel):
-    amigo: str
+class DesempateGrupoPayload(BaseModel):
+    orden: list[str]
 
 # ─── ENDPOINTS ──────────────────────────────────────────
 
@@ -240,14 +240,19 @@ def get_desempates():
     """Devuelve los puntos extra de desempate."""
     return cargar_desempates()
 
-@app.post("/desempate")
-def add_desempate(payload: DesempatePayload, x_pin: Optional[str] = Header(None)):
-    """Otorga un punto extra de desempate a un amigo tras ganar un volado de moneda."""
+@app.post("/desempate-grupo")
+def desempate_grupo(payload: DesempateGrupoPayload, x_pin: Optional[str] = Header(None)):
+    """Otorga puntos de desempate en orden, donde el primero de la lista recibe más puntos."""
     verificar_pin(x_pin)
-    if payload.amigo not in AMIGOS:
-        raise HTTPException(status_code=400, detail="Amigo no válido")
     des = cargar_desempates()
-    des[payload.amigo] = des.get(payload.amigo, 0) + 1
+    current_max = max(des.values()) if des else 0
+    
+    # Asignamos valores crecientes empezando desde el último lugar del grupo
+    for amigo in reversed(payload.orden):
+        if amigo in AMIGOS:
+            current_max += 1
+            des[amigo] = current_max
+            
     guardar_desempates(des)
     return {"ok": True, "desempates": des}
 

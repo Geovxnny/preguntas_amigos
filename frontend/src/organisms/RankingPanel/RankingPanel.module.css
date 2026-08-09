@@ -169,39 +169,113 @@
 .tieArena {
   display: flex;
   flex-direction: column;
+}
+
+.tieColumns {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.coinSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 
-.tieArena h3 {
-  color: rgba(255,255,255,0.6);
-  margin-bottom: var(--space-6);
+.miniRankingSection {
+  width: 220px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
-.tieWinnerDisplay {
+.miniRankingList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.miniRankItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border-left: 4px solid var(--amigo-color);
+  font-weight: bold;
+}
+
+.miniRankItemPending {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.02);
+  border-left: 4px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.4);
+}
+
+.miniRankPos {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+/* 3D COIN CSS */
+.coinWrapper {
+  perspective: 1000px;
+  width: 120px;
   height: 120px;
+  margin: 1.5rem auto;
+}
+
+.coin3D {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.1s;
+}
+
+.isFlipping {
+  animation: flipCoin 0.4s infinite linear;
+}
+
+.coinFront, .coinBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: var(--space-4);
-}
-
-.tiePlaceholder {
-  color: rgba(255,255,255,0.3);
   font-size: 1.5rem;
-  font-style: italic;
-}
-
-.tieWinnerCard {
-  font-size: 3rem;
   font-weight: 800;
-  font-family: var(--font-display);
-  color: var(--winner-color, white);
-  text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  border: 4px solid #FBBF24;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.5);
+  color: white;
 }
 
-.tieWinnerFinal {
-  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform: scale(1.2);
+.coinFront {
+  background: #1E1B4B;
+  transition: background-color 0.3s;
+}
+
+.coinBack {
+  background: #B45309;
+  transform: rotateY(180deg);
+}
+
+@keyframes flipCoin {
+  0% { transform: rotateY(0deg) translateY(0); }
+  50% { transform: rotateY(180deg) translateY(-40px); }
+  100% { transform: rotateY(360deg) translateY(0); }
 }
 
 @keyframes modalIn {
@@ -245,4 +319,6 @@
 @media (max-width: 768px) {
   .podium { flex-direction: column; align-items: center; }
   .titlesRow { flex-direction: column; }
+  .tieColumns { flex-direction: column; }
+  .miniRankingSection { width: 100%; }
 }
