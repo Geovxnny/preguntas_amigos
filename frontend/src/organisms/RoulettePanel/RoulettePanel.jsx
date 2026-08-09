@@ -104,8 +104,8 @@ export function RoulettePanel() {
           <h2 className={styles.winnerName} style={{ '--winner-color': winner.color }}>
             ¡{winner.nombre}!
           </h2>
-          <div className={styles.castigoBox}>
-            🔥 Castigo: {castigo}
+          <div className={styles.castigoBox} style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
+            <Icon name="Flame" size={28} color="#F97316" /> Castigo: {castigo}
           </div>
           <div style={{ marginTop: '24px' }}>
             <Button size="md" variant="ghost" onClick={spinRoulette}>

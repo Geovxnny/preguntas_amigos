@@ -3,6 +3,7 @@ import {
   ResponsiveContainer, Cell, LabelList
 } from 'recharts';
 import { COLOR_POR_AMIGO } from '../../constants/friends';
+import { Icon } from '../../atoms/Icon/Icon';
 import styles from './VoteChart.module.css';
 
 const CustomLabel = ({ x, y, width, value }) => (
@@ -52,8 +53,8 @@ export function VoteChart({ votos }) {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.total}>
-        🗳️ <strong>{total}</strong> votos totales
+      <div className={styles.total} style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+        <Icon name="Inbox" size={20} color="#FBBF24" /> <strong>{total}</strong> votos totales
       </div>
       <ResponsiveContainer width="100%" height={360}>
         <BarChart data={data} margin={{ top: 24, right: 20, left: 0, bottom: 0 }}>
