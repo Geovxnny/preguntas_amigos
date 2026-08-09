@@ -17,8 +17,9 @@ export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLog
   const navItems = [
     { id: 'mobile',  label: 'Votar',     icon: 'Smartphone' },
     ...(isHost ? [
-      { id: 'tv',      label: 'Pantalla TV', icon: 'Monitor' },
-      { id: 'ranking', label: 'Ranking',     icon: 'Trophy'  },
+      { id: 'tv',       label: 'Pantalla TV', icon: 'Monitor' },
+      { id: 'ranking',  label: 'Ranking',     icon: 'Trophy'  },
+      { id: 'roulette', label: 'Ruleta',      icon: 'Dices'   },
     ] : []),
   ];
 

@@ -66,7 +66,7 @@ PREGUNTAS = [
     'El Falta de Oxígeno. ¿Quién es él que corre 10 metros y en tres días recupera el aire?',
     'El Superviviente. Si estuviéramos en un apocalipsis zombi, ¿quién sobreviviría más tiempo por su resistencia?',
     'El Nutricionista. ¿Quién es el que más crítica lo que comen los demás?',
-    'El Coleccionista de Medallas: ¿Quién es el que se inscribe a todas las carreras de la ciudad y trota un kilómetro solo para tener la foto con la medalla en Instagram?',
+    'El Coleccionista de Medallas. ¿Quién es el que se inscribe a todas las carreras de la ciudad y trota un kilómetro solo para tener la foto con la medalla en Instagram?',
     'El Repetitivo. ¿Quién se obsesiona con una canción y la pone tanto que todos la odian?',
     'El Dictador Musical. ¿Quién es el que siempre se adueña de la música y pone lo más raro?',
     'El Avergonzando Musical. ¿A quién le daría más vergüenza que mostremos a todos su "Spotify Wrapped" (sus canciones más escuchadas del año)?',

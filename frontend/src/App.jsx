@@ -3,6 +3,7 @@ import { AppLayout } from './templates/AppLayout/AppLayout';
 import { MobileVotePanel } from './organisms/MobileVotePanel/MobileVotePanel';
 import { TVResultsPanel } from './organisms/TVResultsPanel/TVResultsPanel';
 import { RankingPanel } from './organisms/RankingPanel/RankingPanel';
+import { RoulettePanel } from './organisms/RoulettePanel/RoulettePanel';
 import { Icon } from './atoms/Icon/Icon';
 import { useHostAuth } from './hooks/useHostAuth';
 import { useGameState } from './hooks/useGameState';
@@ -85,6 +86,10 @@ export default function App() {
 
       {mode === 'ranking' && isHost && (
         <RankingPanel />
+      )}
+
+      {mode === 'roulette' && isHost && (
+        <RoulettePanel />
       )}
     </AppLayout>
   );
