@@ -184,7 +184,7 @@ export function RoulettePanel() {
         </div>
       )}
 
-      {activeTab === 'retos' && availableRetos.length === 0 && !spinning && !winner && (
+      {activeTab === 'retos' && availableRetos.length === 0 && !spinning && (
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <p style={{ color: '#FBBF24', fontSize: '1.2rem', marginBottom: '16px', fontWeight: 600 }}>¡Ya no hay más retos en la lista!</p>
           <Button onClick={resetRetos} size="md" variant="danger">
@@ -213,9 +213,11 @@ export function RoulettePanel() {
             </h2>
           )}
           <div style={{ marginTop: activeTab === 'amigos' ? '0' : '24px' }}>
-            <Button size="md" variant="ghost" onClick={spinRoulette}>
-              <Icon name="RefreshCw" size={18} /> Girar de nuevo
-            </Button>
+            {!(activeTab === 'retos' && availableRetos.length === 0) && (
+              <Button size="md" variant="ghost" onClick={spinRoulette}>
+                <Icon name="RefreshCw" size={18} /> Girar de nuevo
+              </Button>
+            )}
           </div>
         </div>
       )}
