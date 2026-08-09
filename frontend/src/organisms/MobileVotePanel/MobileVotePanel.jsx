@@ -11,6 +11,7 @@ import styles from './MobileVotePanel.module.css';
  */
 export function MobileVotePanel({ preguntaActiva, onSync }) {
   const [toast, setToast] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [lastVote, setLastVote] = useState(() => localStorage.getItem(`vote_q${preguntaActiva}`));
 
   useEffect(() => {
@@ -40,11 +41,18 @@ export function MobileVotePanel({ preguntaActiva, onSync }) {
         </div>
         <button
           className={styles.syncBtn}
-          onClick={onSync}
+          onClick={async () => {
+            setIsSyncing(true);
+            await onSync();
+            setTimeout(() => setIsSyncing(false), 500); // short delay for visual feedback
+          }}
           id="sync-btn"
           aria-label="Sincronizar"
+          disabled={isSyncing}
         >
-          <Icon name="RefreshCw" size={18} />
+          <div className={isSyncing ? styles.spin : ''}>
+            <Icon name="RefreshCw" size={18} />
+          </div>
         </button>
       </div>
 

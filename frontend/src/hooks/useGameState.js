@@ -31,7 +31,7 @@ export function useGameState() {
 
     if (mode !== 'mobile') return;
 
-    const INTERVAL_NORMAL = 4000;
+    const INTERVAL_NORMAL = 1000;
     const INTERVAL_OFFLINE = 15000; // Check less often when offline
 
     const tick = () => {

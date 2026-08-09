@@ -19,6 +19,26 @@ const CustomLabel = ({ x, y, width, value }) => (
   </text>
 );
 
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        background: 'rgba(76,53,181,0.9)',
+        border: '1px solid rgba(255,255,255,0.2)',
+        borderRadius: 12,
+        padding: '8px 12px',
+        color: 'white',
+        fontFamily: "'Nunito', sans-serif",
+        fontWeight: 600,
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+      }}>
+        {payload[0].value} {payload[0].value === 1 ? 'voto' : 'votos'}
+      </div>
+    );
+  }
+  return null;
+};
+
 /**
  * Molecule: VoteChart
  * Gráfico de barras animado con los resultados de votación.
@@ -45,14 +65,8 @@ export function VoteChart({ votos }) {
           />
           <YAxis hide />
           <Tooltip
-            contentStyle={{
-              background: 'rgba(76,53,181,0.9)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              borderRadius: 12,
-              color: 'white',
-              fontFamily: "'Nunito', sans-serif",
-            }}
             cursor={{ fill: 'rgba(255,255,255,0.08)' }}
+            content={<CustomTooltip />}
           />
           <Bar dataKey="votos" radius={[12, 12, 0, 0]} isAnimationActive animationDuration={600}>
             <LabelList content={<CustomLabel />} />

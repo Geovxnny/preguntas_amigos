@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PodiumCard } from '../../molecules/PodiumCard/PodiumCard';
 import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
@@ -30,16 +30,43 @@ function calcularRanking(todosVotos, amigos) {
 
 const AMIGOS_NOMBRES = ['Kyu', 'Elaina', 'Superboy', 'Emilio', 'Hally', 'JL', 'Lucho', 'Gio'];
 
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        background: 'rgba(76,53,181,0.9)',
+        border: '1px solid rgba(255,255,255,0.2)',
+        borderRadius: 12,
+        padding: '8px 12px',
+        color: 'white',
+        fontFamily: "'Nunito', sans-serif",
+        fontWeight: 600,
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+      }}>
+        {payload[0].value} {payload[0].value === 1 ? 'pregunta ganada' : 'preguntas ganadas'}
+      </div>
+    );
+  }
+  return null;
+};
+
 /**
  * Organism: RankingPanel
  * Podio animado + tabla de ranking acumulado.
  */
 export function RankingPanel() {
   const { todosVotos, fetchTodosVotos } = useVotes();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchTodosVotos();
-  }, []);
+  }, [fetchTodosVotos]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchTodosVotos();
+    setTimeout(() => setIsRefreshing(false), 500); // small delay to make animation visible
+  };
 
   const ranking = calcularRanking(todosVotos, AMIGOS_NOMBRES);
   const top3 = ranking.slice(0, 3);
@@ -51,7 +78,7 @@ export function RankingPanel() {
         <h1 className={styles.title}>
           <Icon name="Trophy" size={32} color="#FBBF24" /> Ranking Final
         </h1>
-        <Button variant="ghost" size="sm" onClick={fetchTodosVotos} id="ranking-refresh">
+        <Button variant="ghost" size="sm" onClick={handleRefresh} loading={isRefreshing} id="ranking-refresh">
           <Icon name="RefreshCw" size={16} /> Actualizar
         </Button>
       </div>
@@ -87,15 +114,8 @@ export function RankingPanel() {
                 />
                 <YAxis hide />
                 <Tooltip
-                  contentStyle={{
-                    background: 'rgba(76,53,181,0.9)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: 12,
-                    color: 'white',
-                    fontFamily: "'Nunito', sans-serif",
-                  }}
                   cursor={{ fill: 'rgba(255,255,255,0.08)' }}
-                  formatter={(v) => [`${v} preguntas ganadas`, '']}
+                  content={<CustomTooltip />}
                 />
                 <Bar dataKey="puntos" radius={[10, 10, 0, 0]} isAnimationActive animationDuration={700}>
                   <LabelList

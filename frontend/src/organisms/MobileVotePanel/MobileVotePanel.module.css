@@ -38,10 +38,23 @@
   justify-content: center;
   color: white;
   cursor: pointer;
-  transition: background var(--transition-fast), transform var(--transition-fast);
+  transition: all var(--transition-fast);
 }
-.syncBtn:hover { background: rgba(255,255,255,0.25); }
-.syncBtn:active { transform: rotate(180deg); }
+.syncBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+.syncBtn:active {
+  transform: scale(0.95);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
 
 .cta {
   display: flex;
