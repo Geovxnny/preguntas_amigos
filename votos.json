@@ -53,9 +53,19 @@
     "Kyu": 0,
     "Elaina": 0,
     "Superboy": 0,
-    "Emilio": 0,
+    "Emilio": 1,
     "Hally": 0,
     "JL": 1,
+    "Lucho": 0,
+    "Gio": 0
+  },
+  "10": {
+    "Kyu": 0,
+    "Elaina": 0,
+    "Superboy": 0,
+    "Emilio": 0,
+    "Hally": 1,
+    "JL": 0,
     "Lucho": 0,
     "Gio": 0
   }

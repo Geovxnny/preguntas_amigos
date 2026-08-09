@@ -32,14 +32,14 @@ LUCIDE_ICONS = {
 }
 
 COLORES_BOTONES = [
-    "#4A7FE8",  # azul
-    "#2DD4BF",  # teal
-    "#FB923C",  # naranja
-    "#F43F5E",  # rojo/coral
-    "#A855F7",  # morado
-    "#22C55E",  # verde
-    "#EAB308",  # amarillo
-    "#EC4899",  # rosa
+    "#22C55E",  # verde (Kyu)
+    "#2DD4BF",  # teal (Elaina)
+    "#F97316",  # naranja (Superboy)
+    "#F43F5E",  # rojo/coral (Emilio)
+    "#A855F7",  # morado (Hally)
+    "#3B82F6",  # azul (JL)
+    "#FACC15",  # amarillo (Lucho)
+    "#EC4899",  # rosa (Gio)
 ]
 
 PREGUNTAS = [
