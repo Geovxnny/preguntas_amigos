@@ -1,17 +1,15 @@
 .panel {
+  padding: var(--space-6);
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-  padding: var(--space-6);
-  max-width: 880px;
-  margin: 0 auto;
-  width: 100%;
 }
 
 .headerRow {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
 }
 
 .title {
@@ -23,26 +21,200 @@
   color: white;
 }
 
-.podium {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-}
-
-.chartWrap {
-  background: rgba(255,255,255,0.08);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
 .empty {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-4);
-  padding: var(--space-16) 0;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.6);
   font-size: var(--text-xl);
   font-family: var(--font-display);
+}
+
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  min-height: 200px;
+}
+
+.titlesRow {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.titleCard {
+  background: rgba(0, 0, 0, 0.2);
+  border: 2px solid;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 250px;
+}
+
+.titleIcon {
+  font-size: 2.5rem;
+}
+
+.titleText {
+  display: flex;
+  flex-direction: column;
+}
+
+.titleText span {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.titleText strong {
+  font-size: 1.25rem;
+  color: white;
+  font-weight: 800;
+}
+
+.chartWrap {
+  flex: 1;
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+}
+
+/* Modal de Desempate */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--color-bg);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: white;
+}
+
+.modalTitle {
+  font-family: var(--font-display);
+  color: white;
+  margin-bottom: var(--space-6);
+}
+
+.tieGroupsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tieGroupsList p {
+  color: rgba(255,255,255,0.7);
+  margin-bottom: var(--space-2);
+}
+
+.tieGroupBtn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tieGroupBtn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+
+.tieGroupBtn strong {
+  color: #FBBF24;
+}
+
+.tieArena {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tieArena h3 {
+  color: rgba(255,255,255,0.6);
+  margin-bottom: var(--space-6);
+}
+
+.tieWinnerDisplay {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.tiePlaceholder {
+  color: rgba(255,255,255,0.3);
+  font-size: 1.5rem;
+  font-style: italic;
+}
+
+.tieWinnerCard {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--winner-color, white);
+  text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.tieWinnerFinal {
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: scale(1.2);
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .podium { flex-direction: column; align-items: center; }
+  .titlesRow { flex-direction: column; }
 }

@@ -15,7 +15,7 @@ const MEDAL_CONFIG = [
  * Molecule: PodiumCard
  * Podium card with Lucide medal icon, friend icon and points.
  */
-export function PodiumCard({ amigo, puntos, posicion, delay = 0 }) {
+export function PodiumCard({ amigo, puntos, posicion, delay = 0, isTie = false }) {
   const medal = MEDAL_CONFIG[posicion] || { icon: 'Star', color: '#A855F7', label: `${posicion + 1}º` };
   const color = COLOR_POR_AMIGO[amigo] || '#A855F7';
   const icono = ICONO_POR_AMIGO[amigo] || 'User';
@@ -27,7 +27,10 @@ export function PodiumCard({ amigo, puntos, posicion, delay = 0 }) {
     >
       <div className={styles.medal}>
         <Icon name={medal.icon} size={36} color={medal.color} strokeWidth={2} />
-        <span className={styles.medalLabel} style={{ color: medal.color }}>{medal.label}</span>
+        <span className={styles.medalLabel} style={{ color: medal.color }}>
+          {medal.label}
+          {isTie && <small style={{ fontSize: '0.4em', display: 'block' }}>(Empate)</small>}
+        </span>
       </div>
       <div className={styles.iconWrap} style={{ background: color }}>
         <Icon name={icono} size={32} color="white" />
