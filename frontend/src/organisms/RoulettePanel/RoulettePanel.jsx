@@ -111,9 +111,9 @@ export function RoulettePanel() {
 
       {activeTab === 'retos' && (
         <div className={styles.retoContainer}>
-          <div className={`${styles.retoCard} ${(!spinning && winner) ? styles.retoCardActive : ''}`}>
+          <div className={`${styles.retoCard} ${(!spinning && winner && typeof winner === 'string') ? styles.retoCardActive : ''}`}>
             <span className={styles.retoText}>
-              {spinning ? items[activeIndex] : (winner || "¿Quién será la próxima víctima?")}
+              {spinning ? items[activeIndex] : (typeof winner === 'string' ? winner : "¿Quién será la próxima víctima?")}
             </span>
           </div>
         </div>
