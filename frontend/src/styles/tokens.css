@@ -1,0 +1,96 @@
+/* =========================================================
+   DESIGN TOKENS — Trivia entre Amigos
+   Paleta inspirada en la imagen de referencia:
+   fondo morado vibrante + cards blancas + colores Kahoot
+   Fuente: Fredoka (display/headings) + Nunito (body)
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  /* ── Colores base ── */
+  --color-bg:           #6B4DE8;   /* morado principal (fondo app) */
+  --color-bg-deep:      #4C35B5;   /* morado más oscuro (sombras) */
+  --color-bg-light:     #8B6FF0;   /* morado más claro (hover bg) */
+  --color-surface:      #FFFFFF;   /* cards blancas */
+  --color-surface-glass: rgba(255, 255, 255, 0.18);
+
+  /* ── Texto ── */
+  --color-text-on-purple: #FFFFFF;
+  --color-text-on-white:  #1E1B4B;
+  --color-text-muted:     rgba(255, 255, 255, 0.65);
+  --color-text-label:     #4C35B5;
+
+  /* ── Colores de botones de amigos (8 slots) ── */
+  --color-friend-1: #4A7FE8;   /* Kyu — azul */
+  --color-friend-2: #2DD4BF;   /* Elaina — teal */
+  --color-friend-3: #FB923C;   /* Superboy — naranja */
+  --color-friend-4: #F43F5E;   /* Emilio — rojo/coral */
+  --color-friend-5: #A855F7;   /* Hally — morado claro */
+  --color-friend-6: #22C55E;   /* JL — verde */
+  --color-friend-7: #EAB308;   /* Lucho — amarillo */
+  --color-friend-8: #EC4899;   /* Gio — rosa */
+
+  /* ── Gradientes de cards (fondo de botones) ── */
+  --grad-friend-1: linear-gradient(135deg, #4A7FE8 0%, #7B5CE7 100%);
+  --grad-friend-2: linear-gradient(135deg, #2DD4BF 0%, #4A7FE8 100%);
+  --grad-friend-3: linear-gradient(135deg, #FB923C 0%, #F59E0B 100%);
+  --grad-friend-4: linear-gradient(135deg, #F43F5E 0%, #EC4899 100%);
+  --grad-friend-5: linear-gradient(135deg, #A855F7 0%, #7B5CE7 100%);
+  --grad-friend-6: linear-gradient(135deg, #22C55E 0%, #2DD4BF 100%);
+  --grad-friend-7: linear-gradient(135deg, #EAB308 0%, #FB923C 100%);
+  --grad-friend-8: linear-gradient(135deg, #EC4899 0%, #A855F7 100%);
+
+  /* ── Acento dorado (ranking) ── */
+  --color-gold:   #FBBF24;
+  --color-silver: #CBD5E1;
+  --color-bronze: #D97706;
+
+  /* ── Estado / feedback ── */
+  --color-success: #22C55E;
+  --color-error:   #F43F5E;
+
+  /* ── Tipografía ── */
+  --font-display: 'Fredoka', sans-serif;
+  --font-body:    'Nunito', sans-serif;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+  --text-6xl:  3.75rem;
+
+  /* ── Espaciado ── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* ── Bordes ── */
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+  --radius-full: 9999px;
+
+  /* ── Sombras ── */
+  --shadow-card: 0 8px 32px rgba(75, 53, 181, 0.35);
+  --shadow-btn:  0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 24px rgba(107, 77, 232, 0.6);
+
+  /* ── Transiciones ── */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+}
