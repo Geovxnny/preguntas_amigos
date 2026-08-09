@@ -7,7 +7,7 @@ import styles from './AppLayout.module.css';
 
 /**
  * Template: AppLayout
- * Layout principal: sidebar izquierda + área de contenido.
+ * Main layout: left sidebar + content area.
  */
 export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLogout, authError, preguntaActiva, totalPreguntas }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -23,34 +23,37 @@ export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLog
 
   return (
     <div className={styles.layout}>
-      {/* Botón hamburguesa para móvil */}
+      {/* Mobile hamburger button */}
       <button
         className={styles.menuToggle}
         onClick={() => setSidebarOpen(p => !p)}
         id="menu-toggle"
-        aria-label="Abrir menú"
+        aria-label="Open menu"
       >
         <Icon name={sidebarOpen ? 'X' : 'Menu'} size={24} />
       </button>
 
-      {/* Overlay en móvil */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div className={styles.overlay} onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
-        <div className={styles.sidebarInner}>
+        {/* Scrollable top section */}
+        <div className={styles.sidebarScroll}>
           {/* Logo */}
           <div className={styles.logo}>
-            <span className={styles.logoEmoji}>🎉</span>
+            <div className={styles.logoIcon}>
+              <Icon name="Sparkles" size={22} color="#FBBF24" />
+            </div>
             <div>
               <div className={styles.logoTitle}>Trivia</div>
               <div className={styles.logoSub}>entre Amigos</div>
             </div>
           </div>
 
-          {/* Navegación */}
+          {/* Navigation */}
           <nav className={styles.nav}>
             {navItems.map(item => (
               <button
@@ -67,32 +70,33 @@ export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLog
 
           <div className={styles.divider} />
 
-          {/* Info de pregunta activa */}
+          {/* Active question status */}
           <div className={styles.statusCard}>
             <Icon name="Radio" size={16} color="rgba(255,255,255,0.6)" />
             <span className={styles.statusText}>
-              Pregunta activa: <strong>{preguntaActiva}</strong> / {totalPreguntas}
+              Active question: <strong>{preguntaActiva}</strong> / {totalPreguntas}
             </span>
           </div>
 
           {/* QR Code */}
           <div className={styles.qrWrap}>
             <p className={styles.qrLabel}>
-              <Icon name="Wifi" size={14} /> Acceso WiFi
+              <Icon name="Wifi" size={14} /> WiFi Access
             </p>
             <div className={styles.qrBox}>
               <QRCode value={appUrl} size={120} fgColor="#1E1B4B" bgColor="white" />
             </div>
             <code className={styles.qrUrl}>{appUrl}</code>
           </div>
+        </div>
 
+        {/* Fixed bottom: host auth — always visible */}
+        <div className={styles.sidebarFooter}>
           <div className={styles.divider} />
-
-          {/* Autenticación de anfitrión */}
           {!isHost ? (
             <div className={styles.hostSection}>
               <p className={styles.hostLabel}>
-                <Icon name="Lock" size={14} /> Modo anfitrión
+                <Icon name="Lock" size={14} /> Host mode
               </p>
               <PinInput onSubmit={onLogin} error={authError} />
             </div>
@@ -100,10 +104,10 @@ export function AppLayout({ children, mode, onModeChange, isHost, onLogin, onLog
             <div className={styles.hostSection}>
               <div className={styles.hostActive}>
                 <Icon name="Unlock" size={16} color="#22C55E" />
-                <span>Anfitrión activo</span>
+                <span>Host active</span>
               </div>
               <Button variant="ghost" size="sm" fullWidth onClick={onLogout} id="logout-btn">
-                <Icon name="LogOut" size={14} /> Cerrar sesión
+                <Icon name="LogOut" size={14} /> Sign out
               </Button>
             </div>
           )}

@@ -10,7 +10,9 @@
 }
 
 .badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--color-gold);
   color: #1E1B4B;
   font-family: var(--font-display);

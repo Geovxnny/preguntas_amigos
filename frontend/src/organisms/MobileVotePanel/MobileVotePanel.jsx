@@ -17,10 +17,10 @@ export function MobileVotePanel({ preguntaActiva, onSync }) {
     try {
       await votar(preguntaActiva - 1, nombre);
       setLastVote(nombre);
-      setToast(`¡Votaste por ${nombre}! 🎉`);
-      setTimeout(() => setToast(null), 2500);
+      setToast({ text: `Voted for ${nombre}!`, type: 'success' });
+      setTimeout(() => { setToast(null); setLastVote(null); }, 2500);
     } catch (err) {
-      setToast(`Error: ${err.message}`);
+      setToast({ text: `Error: ${err.message}`, type: 'error' });
       setTimeout(() => setToast(null), 3000);
     }
   };
@@ -43,7 +43,10 @@ export function MobileVotePanel({ preguntaActiva, onSync }) {
         </button>
       </div>
 
-      <h2 className={styles.cta}>👇 Elige tu respuesta</h2>
+      <div className={styles.cta}>
+        <Icon name="MousePointerClick" size={20} />
+        <span>Choose your answer</span>
+      </div>
 
       {/* Grid de amigos */}
       <div className={styles.grid}>
@@ -60,10 +63,11 @@ export function MobileVotePanel({ preguntaActiva, onSync }) {
         ))}
       </div>
 
-      {/* Toast de confirmación */}
+      {/* Confirmation toast */}
       {toast && (
-        <div className={`${styles.toast} ${toast.startsWith('Error') ? styles.toastError : ''}`}>
-          {toast}
+        <div className={`${styles.toast} ${toast.type === 'error' ? styles.toastError : ''}`}>
+          <Icon name={toast.type === 'error' ? 'AlertCircle' : 'CheckCircle'} size={16} />
+          {toast.text}
         </div>
       )}
     </div>

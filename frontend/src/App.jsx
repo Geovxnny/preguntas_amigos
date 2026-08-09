@@ -3,7 +3,7 @@ import { AppLayout } from './templates/AppLayout/AppLayout';
 import { MobileVotePanel } from './organisms/MobileVotePanel/MobileVotePanel';
 import { TVResultsPanel } from './organisms/TVResultsPanel/TVResultsPanel';
 import { RankingPanel } from './organisms/RankingPanel/RankingPanel';
-import { Spinner } from './atoms/Spinner/Spinner';
+import { Icon } from './atoms/Icon/Icon';
 import { useHostAuth } from './hooks/useHostAuth';
 import { useGameState } from './hooks/useGameState';
 import { getPreguntas } from './services/api';
@@ -17,28 +17,24 @@ export default function App() {
     mode,
     setMode,
     loading,
+    apiOnline,
     fetchEstado,
     siguiente,
     anterior,
-  } = useGameState(isHost);
+  } = useGameState();
 
   const [preguntas, setPreguntas] = useState([]);
 
-  // Cargar preguntas al iniciar
   useEffect(() => {
-    getPreguntas().then(data => {
-      setPreguntas(data.preguntas);
-      setTotalPreguntas(data.total);
-    }).catch(console.error);
+    getPreguntas()
+      .then(data => {
+        setPreguntas(data.preguntas);
+        setTotalPreguntas(data.total);
+      })
+      .catch(() => {
+        // API offline — use default question count, app still renders
+      });
   }, []);
-
-  if (loading && preguntas.length === 0) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100dvh' }}>
-        <Spinner size="lg" />
-      </div>
-    );
-  }
 
   return (
     <AppLayout
@@ -51,6 +47,25 @@ export default function App() {
       preguntaActiva={preguntaActiva}
       totalPreguntas={totalPreguntas}
     >
+      {/* Offline banner */}
+      {!apiOnline && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          background: 'rgba(244,63,94,0.85)',
+          backdropFilter: 'blur(8px)',
+          color: 'white',
+          padding: '10px 20px',
+          fontSize: '0.875rem',
+          fontWeight: 600,
+          fontFamily: 'var(--font-body)',
+        }}>
+          <Icon name="WifiOff" size={16} />
+          API offline — start the server: <code style={{ background: 'rgba(0,0,0,0.25)', padding: '2px 8px', borderRadius: 6, marginLeft: 4 }}>uvicorn api:app --reload</code>
+        </div>
+      )}
+
       {mode === 'mobile' && (
         <MobileVotePanel
           preguntaActiva={preguntaActiva}

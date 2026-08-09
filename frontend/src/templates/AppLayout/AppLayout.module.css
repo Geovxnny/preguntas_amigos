@@ -14,17 +14,28 @@
   position: sticky;
   top: 0;
   height: 100dvh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.2) transparent;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.sidebarInner {
+/* Scrollable top section */
+.sidebarScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-4) var(--space-4);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  padding: var(--space-6) var(--space-4);
-  min-height: 100%;
+}
+
+/* Sticky bottom: host auth always visible */
+.sidebarFooter {
+  flex-shrink: 0;
+  padding: 0 var(--space-4) var(--space-5);
+  background: rgba(0,0,0,0.15);
 }
 
 /* ── Logo ── */
@@ -35,7 +46,16 @@
   padding-bottom: var(--space-4);
 }
 
-.logoEmoji { font-size: 2.4rem; }
+.logoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(251,191,36,0.2);
+  border-radius: var(--radius-md);
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(251,191,36,0.35);
+}
 
 .logoTitle {
   font-family: var(--font-display);

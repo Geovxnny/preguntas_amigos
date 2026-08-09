@@ -59,7 +59,7 @@ export function RankingPanel() {
       {totalPuntos === 0 ? (
         <div className={styles.empty}>
           <Icon name="Users" size={48} color="rgba(255,255,255,0.4)" />
-          <p>¡Aún no hay votos! Empieza a jugar 🎉</p>
+          <p>No votes yet! Start playing.</p>
         </div>
       ) : (
         <>

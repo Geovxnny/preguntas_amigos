@@ -1,14 +1,16 @@
+import { Icon } from '../../atoms/Icon/Icon';
 import styles from './QuestionCard.module.css';
 
 /**
  * Molecule: QuestionCard
- * Card que muestra el texto de la pregunta en el Modo TV.
+ * Displays question text on the TV screen.
  */
 export function QuestionCard({ numero, total, texto }) {
   return (
     <div className={styles.card}>
       <div className={styles.badge}>
-        Pregunta {numero} <span className={styles.total}>/ {total}</span>
+        <Icon name="HelpCircle" size={16} color="#1E1B4B" />
+        Question {numero} <span className={styles.total}>/ {total}</span>
       </div>
       <p className={styles.texto}>{texto}</p>
     </div>

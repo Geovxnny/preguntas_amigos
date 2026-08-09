@@ -21,5 +21,3 @@ export const GRAD_POR_AMIGO = Object.fromEntries(
   AMIGOS.map(a => [a.nombre, a.grad])
 );
 
-// Orden de medallas del ranking
-export const MEDALLAS = ['🥇', '🥈', '🥉'];
