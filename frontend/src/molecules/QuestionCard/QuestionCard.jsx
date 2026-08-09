@@ -6,13 +6,13 @@ import styles from './QuestionCard.module.css';
  * Displays question text on the TV screen.
  */
 export function QuestionCard({ numero, total, texto }) {
-  const parts = texto.split('. ¿');
+  const separatorIndex = texto.indexOf('. ');
   let title = texto;
   let question = '';
   
-  if (parts.length > 1) {
-    title = parts[0] + '.';
-    question = '¿' + parts[1];
+  if (separatorIndex !== -1) {
+    title = texto.slice(0, separatorIndex + 1);
+    question = texto.slice(separatorIndex + 2);
   }
 
   return (
@@ -24,10 +24,10 @@ export function QuestionCard({ numero, total, texto }) {
       <div className={styles.texto}>
         {question ? (
           <>
-            <div style={{ fontWeight: 800, color: '#FBBF24', marginBottom: '8px' }}>
+            <div style={{ fontWeight: 800, color: 'white', marginBottom: '8px', fontSize: '1.2em' }}>
               {title}
             </div>
-            <div style={{ fontSize: '1.1em', opacity: 0.9 }}>
+            <div style={{ fontSize: '1.1em', opacity: 0.85 }}>
               {question}
             </div>
           </>
