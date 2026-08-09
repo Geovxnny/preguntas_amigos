@@ -22,6 +22,8 @@ const INITIAL_RETOS = [
 export function RoulettePanel() {
   const [activeTab, setActiveTab] = useState('amigos'); // 'amigos' | 'retos'
   const [extraAmigos, setExtraAmigos] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [newItemText, setNewItemText] = useState("");
   const [spinning, setSpinning] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [winner, setWinner] = useState(null);
@@ -38,20 +40,27 @@ export function RoulettePanel() {
   const resetRetos = () => {
     setAvailableRetos([...INITIAL_RETOS]);
     localStorage.setItem('retos_disponibles_v2', JSON.stringify([...INITIAL_RETOS]));
+    setWinner(null);
+    setSpinning(false);
   };
 
-  const handleAdd = () => {
+  const handleAddClick = () => {
+    setNewItemText("");
+    setModalOpen(true);
+  };
+
+  const confirmAdd = () => {
+    if (!newItemText || newItemText.trim() === '') return;
     const isAmigo = activeTab === 'amigos';
-    const text = window.prompt(isAmigo ? "Escribe el nombre de la nueva persona:" : "Escribe el nuevo reto:");
-    if (!text || text.trim() === '') return;
 
     if (isAmigo) {
-      setExtraAmigos([...extraAmigos, { nombre: text.trim(), icono: 'User', color: '#FBBF24' }]);
+      setExtraAmigos([...extraAmigos, { nombre: newItemText.trim(), icono: 'User', color: '#FBBF24' }]);
     } else {
-      const newRetos = [...availableRetos, text.trim()];
+      const newRetos = [...availableRetos, newItemText.trim()];
       setAvailableRetos(newRetos);
       localStorage.setItem('retos_disponibles_v2', JSON.stringify(newRetos));
     }
+    setModalOpen(false);
   };
 
   // Si cambiamos de tab, reseteamos la ruleta
@@ -62,7 +71,7 @@ export function RoulettePanel() {
   }, [activeTab]);
 
   const spinRoulette = () => {
-    if (spinning) return;
+    if (spinning || items.length === 0) return;
     
     // Si solo hay un item, no girar, solo mostrarlo
     if (items.length === 1) {
@@ -140,7 +149,7 @@ export function RoulettePanel() {
         
         <button 
           className={styles.addBtn}
-          onClick={handleAdd}
+          onClick={handleAddClick}
           disabled={spinning}
           title={activeTab === 'amigos' ? "Añadir persona" : "Añadir reto"}
         >
@@ -207,6 +216,34 @@ export function RoulettePanel() {
             <Button size="md" variant="ghost" onClick={spinRoulette}>
               <Icon name="RefreshCw" size={18} /> Girar de nuevo
             </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Agregar */}
+      {modalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <button className={styles.closeBtn} onClick={() => setModalOpen(false)}>
+              <Icon name="X" size={24} />
+            </button>
+            <h2 className={styles.modalTitle}>
+               {activeTab === 'amigos' ? 'Añadir Persona' : 'Añadir Reto'}
+            </h2>
+            <div style={{ marginTop: '24px' }}>
+               <input 
+                 autoFocus
+                 type="text" 
+                 value={newItemText} 
+                 onChange={e => setNewItemText(e.target.value)} 
+                 onKeyDown={e => { if(e.key === 'Enter') confirmAdd(); }}
+                 placeholder={activeTab === 'amigos' ? "Nombre del amigo..." : "Escribe el reto..."}
+                 className={styles.modalInput}
+               />
+               <Button style={{ marginTop: '24px', width: '100%', display: 'flex', justifyContent: 'center' }} onClick={confirmAdd}>
+                 <Icon name="Check" size={20} /> Guardar
+               </Button>
+            </div>
           </div>
         </div>
       )}
