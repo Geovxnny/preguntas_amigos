@@ -31,6 +31,10 @@ import plotly.express as px
 VOTES_FILE = "votos.json"
 ESTADO_FILE = "estado.json"  # Guarda cuál es la pregunta activa (la controla el TV)
 
+# PIN para desbloquear el Modo TV, el Ranking y la Zona de administrador.
+# Solo tú (desde tu PC) deberías conocerlo. Cámbialo por el que quieras.
+PIN_ANFITRION = "2026"
+
 # Lista de amigos / opciones fijas de respuesta (puedes editarla)
 AMIGOS = ["Kyu", "Elaina", "Superboy", "Emilio", "Hally", "JL", "Lucho", "Gio"]
 
@@ -228,14 +232,36 @@ st.markdown(
 # =========================================================
 
 st.sidebar.title("🎮 Trivia entre Amigos")
-modo = st.sidebar.radio(
-    "Selecciona la vista:",
-    [
-        "📱 Votación (Modo Celular)",
+
+if "es_anfitrion" not in st.session_state:
+    st.session_state.es_anfitrion = False
+
+# Candado de anfitrión: mientras no se ingrese el PIN correcto, solo
+# se puede votar. El Modo TV, el Ranking y la Zona de administrador
+# quedan ocultos (pensado para desbloquearse solo desde la PC).
+if not st.session_state.es_anfitrion:
+    with st.sidebar.expander("🔐 Soy el anfitrión (PC)"):
+        pin_ingresado = st.text_input("PIN de anfitrión", type="password", key="pin_input")
+        if st.button("Desbloquear"):
+            if pin_ingresado == PIN_ANFITRION:
+                st.session_state.es_anfitrion = True
+                st.rerun()
+            else:
+                st.error("PIN incorrecto.")
+else:
+    st.sidebar.success("🔓 Modo anfitrión activo")
+    if st.sidebar.button("🔒 Cerrar modo anfitrión"):
+        st.session_state.es_anfitrion = False
+        st.rerun()
+
+opciones_modo = ["📱 Votación (Modo Celular)"]
+if st.session_state.es_anfitrion:
+    opciones_modo += [
         "📺 Pantalla de Resultados (Modo TV/Proyector)",
         "🏆 Resultados Generales (Ranking)",
-    ],
-)
+    ]
+
+modo = st.sidebar.radio("Selecciona la vista:", opciones_modo)
 
 st.sidebar.markdown("---")
 st.sidebar.caption(f"🧩 Preguntas cargadas: **{len(PREGUNTAS)}**")
@@ -258,17 +284,19 @@ try:
 except ImportError:
     st.sidebar.info("Instala `qrcode[pil]` para mostrar el código QR aquí.")
 
-st.sidebar.markdown("---")
-with st.sidebar.expander("⚠️ Zona de administrador"):
-    if st.button("🗑️ Reiniciar todos los votos"):
-        guardar_votos({})
-        st.session_state.votos = {}
-        st.success("Todos los votos fueron reiniciados.")
-    if st.button("⏮️ Volver a la Pregunta 1"):
-        guardar_estado(1)
-        st.session_state.pregunta_activa = 1
-        st.session_state.mostrar_resultados = False
-        st.success("Pregunta activa reiniciada a la 1.")
+# La Zona de administrador solo aparece si ya se desbloqueó el modo anfitrión.
+if st.session_state.es_anfitrion:
+    st.sidebar.markdown("---")
+    with st.sidebar.expander("⚠️ Zona de administrador"):
+        if st.button("🗑️ Reiniciar todos los votos"):
+            guardar_votos({})
+            st.session_state.votos = {}
+            st.success("Todos los votos fueron reiniciados.")
+        if st.button("⏮️ Volver a la Pregunta 1"):
+            guardar_estado(1)
+            st.session_state.pregunta_activa = 1
+            st.session_state.mostrar_resultados = False
+            st.success("Pregunta activa reiniciada a la 1.")
 
 # =========================================================
 # VISTA 1: MODO CELULAR (VOTACIÓN)
