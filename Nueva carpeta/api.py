@@ -270,10 +270,3 @@ def reset_estado(x_pin: Optional[str] = Header(None)):
     verificar_pin(x_pin)
     guardar_estado(1)
     return {"ok": True, "pregunta_activa": 1}
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    # Por defecto al ejecutar `python api.py` levantará en el puerto 8030
-    uvicorn.run("api:app", host="0.0.0.0", port=8030, reload=True)
