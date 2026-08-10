@@ -1,0 +1,73 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn:not(:disabled):hover  { transform: translateY(-2px); box-shadow: var(--shadow-btn); }
+.btn:not(:disabled):active { transform: scale(0.96); }
+
+/* ── Sizes ── */
+.btn--sm { padding: var(--space-2) var(--space-4); font-size: var(--text-sm);  height: 36px; }
+.btn--md { padding: var(--space-3) var(--space-6); font-size: var(--text-base); height: 48px; }
+.btn--lg { padding: var(--space-4) var(--space-8); font-size: var(--text-lg);  height: 60px; }
+
+/* ── Variants ── */
+.btn--primary {
+  background: var(--color-surface);
+  color: var(--color-text-label);
+}
+
+.btn--ghost {
+  background: var(--color-surface-glass);
+  color: var(--color-text-on-purple);
+  border: 2px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(8px);
+}
+
+.btn--danger {
+  background: var(--color-error);
+  color: #fff;
+}
+
+.btn--icon {
+  background: var(--color-surface-glass);
+  color: var(--color-text-on-purple);
+  border-radius: var(--radius-full);
+  width: 48px;
+  height: 48px;
+  padding: 0;
+}
+
+/* ── Full width ── */
+.btn--full { width: 100%; }
+
+/* ── Loading spinner ── */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

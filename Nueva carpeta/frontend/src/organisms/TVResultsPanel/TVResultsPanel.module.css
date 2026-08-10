@@ -1,0 +1,55 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.counter {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: white;
+  background: rgba(255,255,255,0.12);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-full);
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.revealWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8) 0;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: rgba(255,255,255,0.6);
+  font-size: var(--text-sm);
+}
+
+.chartWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

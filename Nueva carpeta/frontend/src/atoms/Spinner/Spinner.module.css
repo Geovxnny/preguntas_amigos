@@ -1,0 +1,11 @@
+.spinner {
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: white;
+  animation: spin 0.7s linear infinite;
+}
+.spinner--sm { width: 20px; height: 20px; }
+.spinner--md { width: 36px; height: 36px; }
+.spinner--lg { width: 56px; height: 56px; border-width: 5px; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
